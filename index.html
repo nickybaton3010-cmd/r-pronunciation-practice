@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile R Pronunciation Practice</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 15px;
+        }
+        
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            text-align: center;
+            padding: 25px 20px;
+        }
+        
+        .header h1 {
+            font-size: 1.8em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .student-info {
+            background: rgba(255,255,255,0.2);
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        
+        .student-info input {
+            background: rgba(255,255,255,0.9);
+            border: none;
+            border-radius: 8px;
+            padding: 12px;
+            font-size: 16px;
+            width: 100%;
+            margin-top: 8px;
+        }
+        
+        .progress-bar {
+            background: rgba(255,255,255,0.3);
+            border-radius: 15px;
+            height: 12px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            background: linear-gradient(90deg, #00f2fe, #4facfe);
+            height: 100%;
+            width: 0%;
+            transition: width 0.5s ease;
+            border-radius: 15px;
+        }
+        
+        .content {
+            padding: 20px;
+        }
+        
+        .section {
+            margin-bottom: 30px;
+        }
+        
+        .section-title {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+            padding: 15px 18px;
+            font-size: 1.2em;
+            font-weight: bold;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .exercise-box {
+            background: #f8f9ff;
+            border: 2px solid #e3e8f7;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 25px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .exercise-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #4facfe, #00f2fe);
+        }
+        
+        .exercise-title {
+            color: #2c3e50;
+            font-size: 1.1em;
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .word-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin: 20px 0;
+        }
+        
+        .word-card {
+            background: white;
+            border: 2px solid #e3e8f7;
+            border-radius: 12px;
+            padding: 18px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            min-height: 100px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .word-card:active {
+            transform: scale(0.95);
+        }
+        
+        .word-card.clicked {
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
+            color: white;
+            transform: scale(1.02);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+        
+        .word-main {
+            font-size: 1.4em;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        
+        .phonetic {
+            color: #e74c3c;
+            font-style: italic;
+            font-size: 0.9em;
+            margin-bottom: 10px;
+        }
+        
+        .clicked .phonetic {
+            color: rgba(255,255,255,0.9);
+        }
+        
+        .audio-btn {
+            background: #4facfe;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .clicked .audio-btn {
+            background: rgba(255,255,255,0.2);
+        }
+        
+        .sentence-practice {
+            background: white;
+            border: 2px solid #e3e8f7;
+            border-radius: 12px;
+            padding: 18px;
+            margin: 12px 0;
+            font-size: 1.05em;
+            line-height: 1.7;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        
+        .sentence-practice:active {
+            transform: scale(0.98);
+        }
+        
+        .sentence-practice.completed {
+            background: linear-gradient(135deg, #00b894, #55efc4);
+            color: white;
+            border-color: #00b894;
+            box-shadow: 0 5px 15px rgba(0,184,148,0.3);
+        }
+        
+        .fill-blank-input {
+            display: inline-block;
+            background: transparent;
+            border: none;
+            border-bottom: 3px solid #4facfe;
+            width: 90px;
+            text-align: center;
+            font-size: 1.1em;
+            font-weight: bold;
+            margin: 0 5px;
+            padding: 8px 5px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+        
+        .fill-blank-input:focus {
+            border-color: #00f2fe;
+            transform: scale(1.1);
+        }
+        
+        .fill-blank-input.correct {
+            border-color: #00b894;
+            color: #00b894;
+            background: rgba(0,184,148,0.1);
+        }
+        
+        .fill-blank-input.incorrect {
+            border-color: #e17055;
+            color: #e17055;
+            animation: shake 0.5s ease-in-out;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-8px); }
+            75% { transform: translateX(8px); }
+        }
+        
+        .tongue-twister {
+            background: linear-gradient(135deg, #fdcb6e, #fd79a8);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            font-size: 1.1em;
+            text-align: center;
+            margin: 12px 0;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .tongue-twister:active {
+            transform: scale(0.98);
+        }
+        
+        .story-text {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            font-size: 1.05em;
+            line-height: 1.8;
+            text-align: justify;
+            border: 2px solid #e3e8f7;
+        }
+        
+        .story-text .r-highlight {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+            padding: 3px 6px;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-block;
+            margin: 1px;
+        }
+        
+        .story-text .r-highlight:active {
+            transform: scale(0.95);
+        }
+        
+        .score-display {
+            background: linear-gradient(135deg, #00b894, #55efc4);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            margin: 20px 0;
+            font-size: 1.1em;
+            position: sticky;
+            top: 10px;
+            z-index: 100;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        
+        .celebration {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1000;
+        }
+        
+        .confetti {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: #4facfe;
+            animation: confetti-fall 3s linear infinite;
+        }
+        
+        @keyframes confetti-fall {
+            0% { transform: translateY(-100vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+        }
+        
+        .instruction {
+            background: linear-gradient(135deg, #74b9ff, #0984e3);
+            color: white;
+            padding: 15px 18px;
+            border-radius: 10px;
+            margin: 15px 0;
+            font-style: italic;
+            text-align: center;
+            font-size: 0.95em;
+        }
+        
+        .reset-btn {
+            background: linear-gradient(135deg, #e17055, #d63031);
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 25px;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin: 20px 0;
+        }
+        
+        .reset-btn:active {
+            transform: scale(0.98);
+        }
+        
+        /* Mobile-specific optimizations */
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            
+            .container {
+                border-radius: 15px;
+            }
+            
+            .header h1 {
+                font-size: 1.6em;
+            }
+            
+            .word-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .word-card {
+                padding: 20px;
+                min-height: 120px;
+            }
+            
+            .word-main {
+                font-size: 1.6em;
+            }
+            
+            .audio-btn {
+                width: 50px;
+                height: 50px;
+                font-size: 22px;
+            }
+            
+            .sentence-practice {
+                padding: 20px;
+                font-size: 1.1em;
+            }
+            
+            .fill-blank-input {
+                width: 100px;
+                font-size: 1.2em;
+                padding: 10px 5px;
+            }
+        }
+        
+        /* Larger phones */
+        @media (min-width: 400px) and (max-width: 600px) {
+            .word-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 R Pronunciation Practice</h1>
+            <div class="student-info">
+                <label>👤 Your Name:</label>
+                <input type="text" id="studentName" placeholder="Enter your name">
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div id="progressText">Progress: 0%</div>
+        </div>
+
+        <div class="score-display" id="scoreDisplay">
+            🎯 Words: <span id="wordCount">0</span> | 
+            📝 Exercises: <span id="exerciseCount">0</span> | 
+            ⭐ Progress: <span id="overallProgress">0%</span>
+        </div>
+
+        <div class="content">
+            <!-- Section 1: R at the Beginning -->
+            <div class="section">
+                <div class="section-title">🚀 R at the Beginning</div>
+                
+                <div class="exercise-box">
+                    <div class="exercise-title">🎵 Tap words to hear & practice!</div>
+                    <div class="instruction">Touch each word to hear the pronunciation (or read phonetic guide)</div>
+                    
+                    <div class="word-grid">
+                        <div class="word-card" onclick="playWord('red', this)">
+                            <div class="word-main">red</div>
+                            <div class="phonetic">/red/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                        <div class="word-card" onclick="playWord('run', this)">
+                            <div class="word-main">run</div>
+                            <div class="phonetic">/rʌn/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                        <div class="word-card" onclick="playWord('right', this)">
+                            <div class="word-main">right</div>
+                            <div class="phonetic">/raɪt/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                        <div class="word-card" onclick="playWord('room', this)">
+                            <div class="word-main">room</div>
+                            <div class="phonetic">/ruːm/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                        <div class="word-card" onclick="playWord('rabbit', this)">
+                            <div class="word-main">rabbit</div>
+                            <div class="phonetic">/ˈræbɪt/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                        <div class="word-card" onclick="playWord('ready', this)">
+                            <div class="word-main">ready</div>
+                            <div class="phonetic">/ˈredi/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="exercise-box">
+                    <div class="exercise-title">📖 Sentence Practice</div>
+                    <div class="instruction">Tap sentences after reading them aloud</div>
+                    
+                    <div class="sentence-practice" onclick="toggleSentence(this)">
+                        The red rabbit ran rapidly down the road.
+                    </div>
+                    <div class="sentence-practice" onclick="toggleSentence(this)">
+                        Robert reads the radio report every morning.
+                    </div>
+                    <div class="sentence-practice" onclick="toggleSentence(this)">
+                        The rain made the roses really beautiful.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 2: R in the Middle -->
+            <div class="section">
+                <div class="section-title">🎯 R in the Middle</div>
+                
+                <div class="exercise-box">
+                    <div class="exercise-title">🎵 Middle R Words</div>
+                    <div class="instruction">Focus on the R sound in the middle!</div>
+                    
+                    <div class="word-grid">
+                        <div class="word-card" onclick="playWord('very', this)">
+                            <div class="word-main">very</div>
+                            <div class="phonetic">/ˈveri/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                        <div class="word-card" onclick="playWord('orange', this)">
+                            <div class="word-main">orange</div>
+                            <div class="phonetic">/ˈɔrɪndʒ/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                        <div class="word-card" onclick="playWord('morning', this)">
+                            <div class="word-main">morning</div>
+                            <div class="phonetic">/ˈmɔrnɪŋ/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                        <div class="word-card" onclick="playWord('forest', this)">
+                            <div class="word-main">forest</div>
+                            <div class="phonetic">/ˈfɔrɪst/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                        <div class="word-card" onclick="playWord('sorry', this)">
+                            <div class="word-main">sorry</div>
+                            <div class="phonetic">/ˈsɑri/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                        <div class="word-card" onclick="playWord('library', this)">
+                            <div class="word-main">library</div>
+                            <div class="phonetic">/ˈlaɪbreri/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="exercise-box">
+                    <div class="exercise-title">✏️ Fill the Blanks</div>
+                    <div class="instruction">Type the missing words and tap Enter!</div>
+                    
+                    <div class="sentence-practice">
+                        I eat an <input type="text" class="fill-blank-input" data-answer="orange" onkeypress="checkAnswer(event, this)"> for breakfast.
+                    </div>
+                    <div class="sentence-practice">
+                        Good <input type="text" class="fill-blank-input" data-answer="morning" onkeypress="checkAnswer(event, this)">! How are you?
+                    </div>
+                    <div class="sentence-practice">
+                        I'm <input type="text" class="fill-blank-input" data-answer="sorry" onkeypress="checkAnswer(event, this)"> I'm late.
+                    </div>
+                    <div class="sentence-practice">
+                        The <input type="text" class="fill-blank-input" data-answer="forest" onkeypress="checkAnswer(event, this)"> has tall trees.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 3: R at the End -->
+            <div class="section">
+                <div class="section-title">🏁 R at the End</div>
+                
+                <div class="exercise-box">
+                    <div class="exercise-title">🎵 Final R Words</div>
+                    <div class="instruction">Curl your tongue for the R at the end!</div>
+                    
+                    <div class="word-grid">
+                        <div class="word-card" onclick="playWord('car', this)">
+                            <div class="word-main">car</div>
+                            <div class="phonetic">/kɑr/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                        <div class="word-card" onclick="playWord('teacher', this)">
+                            <div class="word-main">teacher</div>
+                            <div class="phonetic">/ˈtiːtʃər/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                        <div class="word-card" onclick="playWord('water', this)">
+                            <div class="word-main">water</div>
+                            <div class="phonetic">/ˈwɔtər/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                        <div class="word-card" onclick="playWord('mother', this)">
+                            <div class="word-main">mother</div>
+                            <div class="phonetic">/ˈmʌðər/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                        <div class="word-card" onclick="playWord('computer', this)">
+                            <div class="word-main">computer</div>
+                            <div class="phonetic">/kəmˈpjuːtər/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                        <div class="word-card" onclick="playWord('flower', this)">
+                            <div class="word-main">flower</div>
+                            <div class="phonetic">/ˈflaʊər/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 4: Mixed Practice -->
+            <div class="section">
+                <div class="section-title">🎪 Mixed R Practice</div>
+                
+                <div class="exercise-box">
+                    <div class="exercise-title">🌪️ Tongue Twisters</div>
+                    <div class="instruction">Tap to reveal, then practice slowly!</div>
+                    
+                    <div class="tongue-twister" onclick="revealTwister(this)">
+                        Tap for Tongue Twister #1
+                        <div style="display: none;">Red lorry, yellow lorry.</div>
+                    </div>
+                    <div class="tongue-twister" onclick="revealTwister(this)">
+                        Tap for Tongue Twister #2
+                        <div style="display: none;">Round the rugged rock the ragged rascal ran.</div>
+                    </div>
+                    <div class="tongue-twister" onclick="revealTwister(this)">
+                        Tap for Tongue Twister #3
+                        <div style="display: none;">Rural ruler, rural ruler.</div>
+                    </div>
+                </div>
+
+                <div class="exercise-box">
+                    <div class="exercise-title">📚 Interactive Story</div>
+                    <div class="instruction">Tap any red R word to hear it!</div>
+                    
+                    <div class="story-text">
+                        <span class="r-highlight" onclick="highlightWord(this)">Robert's</span> <span class="r-highlight" onclick="highlightWord(this)">red</span> <span class="r-highlight" onclick="highlightWord(this)">car</span> <span class="r-highlight" onclick="highlightWord(this)">broke</span> down near the <span class="r-highlight" onclick="highlightWord(this)">forest</span>. He <span class="r-highlight" onclick="highlightWord(this)">tried</span> to <span class="r-highlight" onclick="highlightWord(this)">repair</span> it, but it was <span class="r-highlight" onclick="highlightWord(this)">raining</span> <span class="r-highlight" onclick="highlightWord(this)">very</span> hard. A <span class="r-highlight" onclick="highlightWord(this)">friendly</span> <span class="r-highlight" onclick="highlightWord(this)">farmer</span> came by and offered to help. "Don't <span class="r-highlight" onclick="highlightWord(this)">worry</span>," said the <span class="r-highlight" onclick="highlightWord(this)">farmer</span>. "My <span class="r-highlight" onclick="highlightWord(this)">brother</span> has a <span class="r-highlight" onclick="highlightWord(this)">garage</span> near <span class="r-highlight" onclick="highlightWord(this)">here</span>. He can fix <span class="r-highlight" onclick="highlightWord(this)">your</span> <span class="r-highlight" onclick="highlightWord(this)">car</span> <span class="r-highlight" onclick="highlightWord(this)">tomorrow</span> <span class="r-highlight" onclick="highlightWord(this)">morning</span>." <span class="r-highlight" onclick="highlightWord(this)">Robert</span> was <span class="r-highlight" onclick="highlightWord(this)">very</span> <span class="r-highlight" onclick="highlightWord(this)">grateful</span> <span class="r-highlight" onclick="highlightWord(this)">for</span> the <span class="r-highlight" onclick="highlightWord(this)">farmer's</span> kindness.
+                    </div>
+                </div>
+            </div>
+
+            <button class="reset-btn" onclick="resetProgress()">🔄 Reset All Progress</button>
+        </div>
+    </div>
+
+    <div class="celebration" id="celebration"></div>
+
+    <script>
+        let wordsPracticed = new Set();
+        let exercisesCompleted = 0;
+        let sentencesCompleted = new Set();
+
+        // Speech Synthesis for word pronunciation
+        function playWord(word, element) {
+            // Check if speech synthesis is supported
+            if ('speechSynthesis' in window) {
+                const utterance = new SpeechSynthesisUtterance(word);
+                utterance.rate = 0.7;
+                utterance.pitch = 1;
+                utterance.lang = 'en-US';
+                
+                // Wait for voices to load
+                if (speechSynthesis.getVoices().length === 0) {
+                    speechSynthesis.addEventListener('voiceschanged', () => {
+                        speechSynthesis.speak(utterance);
+                    });
+                } else {
+                    speechSynthesis.speak(utterance);
+                }
+            } else {
+                // Fallback: show pronunciation guide
+                alert(`Pronunciation: ${word}\nSay it out loud and focus on the R sound!`);
+            }
+            
+            // Mark word as practiced
+            wordsPracticed.add(word);
+            updateProgress();
+            
+            // Visual feedback
+            element.classList.add('clicked');
+            setTimeout(() => {
+                element.classList.remove('clicked');
+            }, 1000);
+        }
+
+        function toggleSentence(element) {
+            if (!element.classList.contains('completed')) {
+                element.classList.add('completed');
+                sentencesCompleted.add(element.textContent);
+                exercisesCompleted++;
+                updateProgress();
+                showCelebration();
+            }
+        }
+
+        function checkAnswer(event, input) {
+            if (event.key === 'Enter') {
+                const answer = input.getAttribute('data-answer');
+                const userInput = input.value.toLowerCase().trim();
+                
+                if (userInput === answer) {
+                    input.classList.add('correct');
+                    input.classList.remove('incorrect');
+                    if (!input.dataset.completed) {
+                        exercisesCompleted++;
+                        input.dataset.completed = 'true';
+                        showCelebration();
+                    }
+                } else {
+                    input.classList.add('incorrect');
+                    input.classList.remove('correct');
+                }
+                updateProgress();
+            }
+        }
+
+        function revealTwister(element) {
+            const hidden = element.querySelector('div[style*="none"]');
+            if (hidden) {
+                element.innerHTML = hidden.textContent;
+                exercisesCompleted++;
+                updateProgress();
+                showCelebration();
+                
+                // Read the tongue twister aloud
+                if ('speechSynthesis' in window) {
+                    const utterance = new SpeechSynthesisUtterance(hidden.textContent);
+                    utterance.rate = 0.5;
+                    utterance.lang = 'en-US';
+                    
+                    if (speechSynthesis.getVoices().length === 0) {
+                        speechSynthesis.addEventListener('voiceschanged', () => {
+                            speechSynthesis.speak(utterance);
+                        });
+                    } else {
+                        speechSynthesis.speak(utterance);
+                    }
+                }
+            }
+        }
+
+        function highlightWord(element) {
+            const word = element.textContent.replace("'s", "").toLowerCase();
+            
+            if ('speechSynthesis' in window) {
+                const utterance = new SpeechSynthesisUtterance(word);
+                utterance.rate = 0.7;
+                utterance.lang = 'en-US';
+                
+                if (speechSynthesis.getVoices().length === 0) {
+                    speechSynthesis.addEventListener('voiceschanged', () => {
+                        speechSynthesis.speak(utterance);
+                    });
+                } else {
+                    speechSynthesis.speak(utterance);
+                }
+            } else {
+                // Show word in alert if no speech
+                alert(`Practice saying: "${word}"`);
+            }
+            
+            wordsPracticed.add(word);
+            updateProgress();
+            
+            // Visual feedback
+            element.style.transform = 'scale(1.1)';
+            setTimeout(() => {
+                element.style.transform = 'scale(1)';
+            }, 300);
+        }
+
+        function updateProgress() {
+            const totalWords = 20;
+            const totalExercises = 10;
+            
+            const wordProgress = (wordsPracticed.size / totalWords) * 50;
+            const exerciseProgress = (exercisesCompleted / totalExercises) * 50;
+            
+            const overallProgress = Math.min(100, wordProgress + exerciseProgress);
+            
+            document.getElementById('progressFill').style.width = overallProgress + '%';
+            document.getElementById('progressText').textContent = `Progress: ${Math.round(overallProgress)}%`;
+            document.getElementById('wordCount').textContent = wordsPracticed.size;
+            document.getElementById('exerciseCount').textContent = exercisesCompleted;
+            document.getElementById('overallProgress').textContent = Math.round(overallProgress) + '%';
+            
+            if (overallProgress >= 100) {
+                showBigCelebration();
+            }
+        }
+
+        function showCelebration() {
+            for (let i = 0; i < 8; i++) {
+                createConfetti();
+            }
+        }
+
+        function showBigCelebration() {
+            for (let i = 0; i < 30; i++) {
+                createConfetti();
+            }
+            
+            setTimeout(() => {
+                alert('🎉 Amazing! You completed all R pronunciation exercises! 🎉');
+            }, 1000);
+        }
+
+        function createConfetti() {
+            const confetti = document.createElement('div');
+            confetti.className = 'confetti';
+            confetti.style.left = Math.random() * 100 + '%';
+            confetti.style.backgroundColor = ['#4facfe', '#00f2fe', '#ff6b6b', '#fdcb6e', '#fd79a8', '#00b894'][Math.floor(Math.random() * 6)];
+            confetti.style.animationDelay = Math.random() * 2 + 's';
+            confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
+            
+            document.getElementById('celebration').appendChild(confetti);
+            
+            setTimeout(() => {
+                confetti.remove();
+            }, 4000);
+        }
+
+        function resetProgress() {
+            if (confirm('Reset all your progress?')) {
+                wordsPracticed.clear();
+                exercisesCompleted = 0;
+                sentencesCompleted.clear();
+                
+                // Reset visual states
+                document.querySelectorAll('.sentence-practice').forEach(el => {
+                    el.classList.remove('completed');
+                });
+                
+                document.querySelectorAll('.fill-blank-input').forEach(input => {
+                    input.value = '';
+                    input.classList.remove('correct', 'incorrect');
+                    delete input.dataset.completed;
+                });
+                
+                document.querySelectorAll('.tongue-twister').forEach((twister, index) => {
+                    const texts = ['Tap for Tongue Twister #1', 'Tap for Tongue Twister #2', 'Tap for Tongue Twister #3'];
+                    const twisters = ['Red lorry, yellow lorry.', 'Round the rugged rock the ragged rascal ran.', 'Rural ruler, rural ruler.'];
+                    twister.innerHTML = `${texts[index]}<div style="display: none;">${twisters[index]}</div>`;
+                });
+                
+                updateProgress();
+            }
+        }
+
+        // Auto-save student name
+        document.getElementById('studentName').addEventListener('input', function() {
+            const name = this.value;
+            if (name) {
+                document.title = `${name}'s R Practice`;
+            }
+        });
+
+        // Initialize
+        updateProgress();
+
+        // Prevent zoom on double tap for iOS
+        document.addEventListener('touchend', function(event) {
+            const now = (new Date()).getTime();
+            if (now - lastTouchEnd <= 300) {
+                event.preventDefault();
+            }
+            lastTouchEnd = now;
+        }, false);
+
+        let lastTouchEnd = 0;
+
+        // Haptic feedback on supported devices
+        function vibrate() {
+            if (navigator.vibrate) {
+                navigator.vibrate(50);
+            }
+        }
+
+        // Add vibration to interactions
+        document.querySelectorAll('.word-card, .sentence-practice, .tongue-twister, .r-highlight').forEach(el => {
+            el.addEventListener('touchstart', vibrate);
+        });
+    </script>
+</body>
+</html>
